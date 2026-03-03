@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>izm | FUTURE PROFILE</title>
+<title>izm | SYSTEM ERROR</title>
 
 <style>
 *{
@@ -30,96 +30,11 @@ body::before{
     width:200%;
     height:200%;
     background-image:
-        linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+        linear-gradient(rgba(0,255,255,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.07) 1px, transparent 1px);
     background-size:40px 40px;
     animation:moveGrid 20s linear infinite;
 }
-
-@keyframes moveGrid{
-    from{transform:translate(0,0);}
-    to{transform:translate(-40px,-40px);}
-}
-
-/* メインカード */
-.container{
-    position:relative;
-    padding:60px 80px;
-    border-radius:20px;
-    background:rgba(0,0,30,0.6);
-    backdrop-filter:blur(15px);
-    border:1px solid rgba(0,255,255,0.4);
-    box-shadow:0 0 50px rgba(0,255,255,0.4);
-    text-align:center;
-    z-index:1;
-}
-
-/* スキャンライン */
-.container::after{
-    content:"";
-    position:absolute;
-    left:0;
-    width:100%;
-    height:3px;
-    background:rgba(0,255,255,0.8);
-    box-shadow:0 0 20px cyan;
-    animation:scan 3s linear infinite;
-}
-
-@keyframes scan{
-    0%{top:0;}
-    100%{top:100%;}
-}
-
-h1{
-    font-size:4rem;
-    letter-spacing:8px;
-    color:#00ffff;
-    text-shadow:
-        0 0 5px #00ffff,
-        0 0 15px #00ffff,
-        0 0 30px #00ffff;
-    margin-bottom:20px;
-}
-
-.subtitle{
-    font-size:1.2rem;
-    opacity:0.7;
-    margin-bottom:30px;
-}
-
-button{
-    padding:12px 35px;
-    border:none;
-    border-radius:30px;
-    background:transparent;
-    border:1px solid cyan;
-    color:cyan;
-    font-size:1rem;
-    letter-spacing:2px;
-    cursor:pointer;
-    transition:0.3s;
-}
-
-button:hover{
-    background:cyan;
-    color:#050510;
-    box-shadow:0 0 20px cyan;
-    transform:scale(1.1);
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-    <h1>IZM</h1>
-    <div class="subtitle">SYSTEM ONLINE</div>
-    <button onclick="alert('ACCESS GRANTED')">ACCESS</button>
-</div>
-
-</body>
-</html>}
 
 @keyframes moveGrid{
     from{transform:translate(0,0);}
@@ -151,43 +66,30 @@ button:hover{
         0 0 40px #00ffff;
 }
 
-.glitch::before,
-.glitch::after{
-    content:attr(data-text);
-    position:absolute;
+/* ノイズオーバーレイ */
+.noise{
+    position:fixed;
+    top:0;
     left:0;
     width:100%;
-    overflow:hidden;
+    height:100%;
+    pointer-events:none;
+    opacity:0;
+    background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+    mix-blend-mode:screen;
+    z-index:999;
 }
 
-.glitch::before{
-    color:#ff00c8;
-    z-index:-1;
-    animation:glitchTop 2s infinite linear alternate-reverse;
-}
-
-.glitch::after{
-    color:#00ff9f;
-    z-index:-2;
-    animation:glitchBottom 1.5s infinite linear alternate-reverse;
-}
-
-@keyframes glitchTop{
-    0%{clip-path: inset(0 0 80% 0); transform:translate(-3px,-3px);}
-    20%{clip-path: inset(10% 0 60% 0); transform:translate(3px,2px);}
-    40%{clip-path: inset(40% 0 20% 0); transform:translate(-2px,3px);}
-    60%{clip-path: inset(60% 0 10% 0); transform:translate(2px,-2px);}
-    80%{clip-path: inset(20% 0 50% 0); transform:translate(-1px,1px);}
-    100%{clip-path: inset(0 0 80% 0); transform:translate(3px,-3px);}
-}
-
-@keyframes glitchBottom{
-    0%{clip-path: inset(80% 0 0 0); transform:translate(3px,3px);}
-    20%{clip-path: inset(60% 0 10% 0); transform:translate(-3px,-2px);}
-    40%{clip-path: inset(20% 0 40% 0); transform:translate(2px,-3px);}
-    60%{clip-path: inset(10% 0 60% 0); transform:translate(-2px,2px);}
-    80%{clip-path: inset(50% 0 20% 0); transform:translate(1px,-1px);}
-    100%{clip-path: inset(80% 0 0 0); transform:translate(-3px,3px);}
+.flash{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:white;
+    opacity:0;
+    pointer-events:none;
+    z-index:998;
 }
 
 .subtitle{
@@ -222,63 +124,39 @@ button:hover{
 
 <body>
 
-<div class="container">
-    <h1 class="glitch" data-text="IZM">IZM</h1>
-    <div class="subtitle">IDENTITY UNSTABLE</div>
-    <button onclick="alert('SYSTEM OVERRIDE')">ACCESS</button>
-</div>
-
-</body>
-</html>    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-p {
-    margin-top: 20px;
-    font-size: 1.2rem;
-    opacity: 0.8;
-}
-
-.line {
-    width: 60px;
-    height: 3px;
-    margin: 20px auto;
-    background: linear-gradient(90deg, #00f5ff, #ff00c8);
-}
-
-button {
-    margin-top: 25px;
-    padding: 10px 25px;
-    border: none;
-    border-radius: 30px;
-    background: linear-gradient(90deg, #00f5ff, #ff00c8);
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px #ff00c8;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-</style>
-
-</head>
-
-<body>
+<div class="noise" id="noise"></div>
+<div class="flash" id="flash"></div>
 
 <div class="container">
-    <h1>izm</h1>
-    <div class="line"></div>
-    <p>Welcome to my world.</p>
-    <button onclick="alert('Nice to meet you.')">ENTER</button>
+    <h1 class="glitch">IZM</h1>
+    <div class="subtitle">SIGNAL DISTORTION</div>
+    <button onclick="alert('REALITY FRAGMENTED')">ACCESS</button>
 </div>
+
+<script>
+const noise = document.getElementById("noise");
+const flash = document.getElementById("flash");
+
+function glitchBurst(){
+    noise.style.opacity = "0.6";
+    flash.style.opacity = "0.4";
+    document.body.style.transform = "translateX(5px)";
+
+    setTimeout(()=>{
+        noise.style.opacity = "0";
+        flash.style.opacity = "0";
+        document.body.style.transform = "translateX(0)";
+    },120);
+}
+
+function randomGlitch(){
+    glitchBurst();
+    const next = Math.random()*4000 + 2000;
+    setTimeout(randomGlitch, next);
+}
+
+setTimeout(randomGlitch, 3000);
+</script>
 
 </body>
 </html>
