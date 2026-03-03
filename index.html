@@ -1,3 +1,89 @@
-I'm izm.
-I'm Japanese high school student.
-2026/03/03
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>izm | Profile</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f0f0f, #1a1a2e);
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    overflow: hidden;
+}
+
+.container {
+    text-align: center;
+    padding: 40px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+h1 {
+    font-size: 3rem;
+    margin: 0;
+    letter-spacing: 4px;
+    background: linear-gradient(90deg, #00f5ff, #ff00c8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+p {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+.line {
+    width: 60px;
+    height: 3px;
+    margin: 20px auto;
+    background: linear-gradient(90deg, #00f5ff, #ff00c8);
+}
+
+button {
+    margin-top: 25px;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(90deg, #00f5ff, #ff00c8);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px #ff00c8;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+    <h1>izm</h1>
+    <div class="line"></div>
+    <p>Welcome to my world.</p>
+    <button onclick="alert('Nice to meet you.')">ENTER</button>
+</div>
+
+</body>
+</html>
