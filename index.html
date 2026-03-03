@@ -3,38 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>izm | Profile</title>
+<title>izm | GLITCH PROFILE</title>
 
 <style>
-body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    background: linear-gradient(135deg, #0f0f0f, #1a1a2e);
-    font-family: 'Segoe UI', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    overflow: hidden;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Orbitron', sans-serif;
 }
 
-.container {
-    text-align: center;
-    padding: 40px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 40px rgba(0, 255, 255, 0.3);
-    animation: fadeIn 1.5s ease-in-out;
+body{
+    height:100vh;
+    background:#050510;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    overflow:hidden;
+    color:white;
 }
 
-h1 {
-    font-size: 3rem;
-    margin: 0;
-    letter-spacing: 4px;
-    background: linear-gradient(90deg, #00f5ff, #ff00c8);
-    -webkit-background-clip: text;
+/* 背景グリッド */
+body::before{
+    content:"";
+    position:absolute;
+    width:200%;
+    height:200%;
+    background-image:
+        linear-gradient(rgba(0,255,255,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.07) 1px, transparent 1px);
+    background-size:40px 40px;
+    animation:moveGrid 20s linear infinite;
+}
+
+@keyframes moveGrid{
+    from{transform:translate(0,0);}
+    to{transform:translate(-40px,-40px);}
+}
+
+/* メインカード */
+.container{
+    position:relative;
+    padding:70px 100px;
+    border-radius:20px;
+    background:rgba(0,0,30,0.6);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(0,255,255,0.4);
+    box-shadow:0 0 50px rgba(0,255,255,0.4);
+    text-align:center;
+    z-index:1;
+}
+
+/* グリッチ文字 */
+.glitch{
+    font-size:4rem;
+    letter-spacing:10px;
+    position:relative;
+    color:#00ffff;
+    text-shadow:
+        0 0 5px #00ffff,
+        0 0 20px #00ffff,
+        0 0 40px #00ffff;
+}
+
+.glitch::before,
+.glitch::after{
+    content:attr(data-text);
+    position:absolute;
+    left:0;
+    width:100%;
+    overflow:hidden;
+}
+
+.glitch::before{
+    color:#ff00c8;
+    z-index:-1;
+    animation:glitchTop 2s infinite linear alternate-reverse;
+}
+
+.glitch::after{
+    color:#00ff9f;
+    z-index:-2;
+    animation:glitchBottom 1.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitchTop{
+    0%{clip-path: inset(0 0 80% 0); transform:translate(-3px,-3px);}
+    20%{clip-path: inset(10% 0 60% 0); transform:translate(3px,2px);}
+    40%{clip-path: inset(40% 0 20% 0); transform:translate(-2px,3px);}
+    60%{clip-path: inset(60% 0 10% 0); transform:translate(2px,-2px);}
+    80%{clip-path: inset(20% 0 50% 0); transform:translate(-1px,1px);}
+    100%{clip-path: inset(0 0 80% 0); transform:translate(3px,-3px);}
+}
+
+@keyframes glitchBottom{
+    0%{clip-path: inset(80% 0 0 0); transform:translate(3px,3px);}
+    20%{clip-path: inset(60% 0 10% 0); transform:translate(-3px,-2px);}
+    40%{clip-path: inset(20% 0 40% 0); transform:translate(2px,-3px);}
+    60%{clip-path: inset(10% 0 60% 0); transform:translate(-2px,2px);}
+    80%{clip-path: inset(50% 0 20% 0); transform:translate(1px,-1px);}
+    100%{clip-path: inset(80% 0 0 0); transform:translate(-3px,3px);}
+}
+
+.subtitle{
+    margin-top:25px;
+    font-size:1.2rem;
+    opacity:0.7;
+    letter-spacing:3px;
+}
+
+button{
+    margin-top:40px;
+    padding:12px 35px;
+    border:none;
+    border-radius:30px;
+    background:transparent;
+    border:1px solid cyan;
+    color:cyan;
+    font-size:1rem;
+    letter-spacing:2px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    background:cyan;
+    color:#050510;
+    box-shadow:0 0 20px cyan;
+    transform:scale(1.1);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1 class="glitch" data-text="IZM">IZM</h1>
+    <div class="subtitle">IDENTITY UNSTABLE</div>
+    <button onclick="alert('SYSTEM OVERRIDE')">ACCESS</button>
+</div>
+
+</body>
+</html>    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
