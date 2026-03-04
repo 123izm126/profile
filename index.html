@@ -3,55 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>izm | REALITY SHIFT</title>
+<title>izm | FINAL FORM</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family: 'Orbitron', sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif;}
 
 body{
     height:100vh;
-    background:#050510;
     display:flex;
     justify-content:center;
     align-items:center;
-    overflow:hidden;
+    background:#050510;
     color:white;
+    overflow:hidden;
     transition:0.6s ease;
 }
 
-/* 背景グリッド */
-body::before{
-    content:"";
-    position:absolute;
-    width:200%;
-    height:200%;
-    background-image:
-        linear-gradient(rgba(0,255,255,0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,255,0.07) 1px, transparent 1px);
-    background-size:40px 40px;
-    animation:moveGrid 20s linear infinite;
-}
-
-@keyframes moveGrid{
-    from{transform:translate(0,0);}
-    to{transform:translate(-40px,-40px);}
-}
-
 .container{
-    position:relative;
+    text-align:center;
     padding:70px 100px;
     border-radius:20px;
     background:rgba(0,0,30,0.6);
     backdrop-filter:blur(15px);
-    border:1px solid rgba(0,255,255,0.4);
-    box-shadow:0 0 50px rgba(0,255,255,0.4);
-    text-align:center;
-    z-index:1;
+    border:1px solid cyan;
+    box-shadow:0 0 50px cyan;
     transition:0.6s ease;
 }
 
@@ -59,118 +34,137 @@ h1{
     font-size:4rem;
     letter-spacing:10px;
     color:#00ffff;
-    text-shadow:
-        0 0 5px #00ffff,
-        0 0 20px #00ffff,
-        0 0 40px #00ffff;
-    transition:0.6s ease;
+    text-shadow:0 0 20px cyan,0 0 40px cyan;
+    transition:0.4s ease;
 }
 
 .subtitle{
     margin-top:25px;
-    font-size:1.2rem;
     opacity:0.7;
     letter-spacing:3px;
-    transition:0.6s ease;
+    transition:0.4s ease;
 }
 
 button{
     margin-top:40px;
     padding:12px 35px;
-    border:none;
     border-radius:30px;
-    background:transparent;
     border:1px solid cyan;
+    background:transparent;
     color:cyan;
-    font-size:1rem;
-    letter-spacing:2px;
     cursor:pointer;
     transition:0.3s;
 }
 
 button:hover{
     background:cyan;
-    color:#050510;
-    box-shadow:0 0 20px cyan;
+    color:black;
     transform:scale(1.1);
 }
 
-/* 崩壊エフェクト */
+/* 崩壊 */
 .glitch{
     animation:shake 0.15s infinite;
 }
 
 @keyframes shake{
-    0%{transform:translate(3px,-3px);}
-    25%{transform:translate(-3px,3px);}
-    50%{transform:translate(3px,3px);}
-    75%{transform:translate(-3px,-3px);}
+    0%{transform:translate(4px,-4px);}
+    25%{transform:translate(-4px,4px);}
+    50%{transform:translate(4px,4px);}
+    75%{transform:translate(-4px,-4px);}
     100%{transform:translate(0,0);}
 }
 
-/* 変化後モード */
-.shifted{
-    background:#ffffff;
-    color:#000000;
-}
+/* モード変化 */
+.shift1{background:white;color:black;}
+.shift1 .container{background:rgba(255,255,255,0.9);border:1px solid black;box-shadow:0 0 40px black;}
+.shift1 h1{color:black;text-shadow:none;}
+.shift1 button{border:1px solid black;color:black;}
+.shift1 button:hover{background:black;color:white;}
 
-.shifted .container{
-    background:rgba(255,255,255,0.8);
-    border:1px solid black;
-    box-shadow:0 0 40px rgba(0,0,0,0.3);
-}
+.shift2{background:#111;color:#ff0055;}
+.shift2 h1{color:#ff0055;text-shadow:0 0 20px #ff0055;}
+.shift2 .subtitle{opacity:0.4;}
 
-.shifted h1{
-    color:#000000;
-    text-shadow:none;
-}
+.shift3{background:black;color:red;}
+.shift3 .container{background:rgba(0,0,0,0.9);border:1px solid red;box-shadow:0 0 60px red;}
+.shift3 h1{color:red;text-shadow:0 0 20px red;}
+.shift3 button{border:1px solid red;color:red;}
+.shift3 button:hover{background:red;color:black;}
 
-.shifted button{
-    border:1px solid black;
-    color:black;
+/* 宇宙モード */
+.space{
+    background:radial-gradient(circle at center,#000010,#000000 70%);
 }
-
-.shifted button:hover{
-    background:black;
-    color:white;
+.star{
+    position:absolute;
+    width:2px;
+    height:2px;
+    background:white;
+    animation:twinkle 2s infinite alternate;
+}
+@keyframes twinkle{
+    from{opacity:0.2;}
+    to{opacity:1;}
 }
 
 </style>
 </head>
-
 <body>
 
 <div class="container">
     <h1 id="title">IZM</h1>
-    <div class="subtitle" id="subtitle">CLICK TO DISTORT REALITY</div>
+    <div class="subtitle" id="subtitle">CLICK TO BREAK REALITY</div>
     <button onclick="shiftReality()">SHIFT</button>
 </div>
 
 <script>
-let shifted = false;
+let stage = 0;
 
 function shiftReality(){
     const body = document.body;
     const title = document.getElementById("title");
     const subtitle = document.getElementById("subtitle");
 
-    // 一瞬崩壊
     body.classList.add("glitch");
 
     setTimeout(()=>{
         body.classList.remove("glitch");
+        stage++;
 
-        shifted = !shifted;
+        body.className="";
 
-        if(shifted){
-            body.classList.add("shifted");
-            subtitle.textContent = "REALITY HAS CHANGED";
-        }else{
-            body.classList.remove("shifted");
-            subtitle.textContent = "CLICK TO DISTORT REALITY";
+        if(stage===1){
+            body.classList.add("shift1");
+            subtitle.textContent="REALITY INVERTED";
+        }
+        else if(stage===2){
+            body.classList.add("shift2");
+            title.textContent="???";
+            subtitle.textContent="IDENTITY LOST";
+        }
+        else if(stage===3){
+            body.classList.add("shift3");
+            subtitle.textContent="DO NOT PROCEED";
+        }
+        else{
+            body.classList.add("space");
+            subtitle.textContent="SECRET MODE UNLOCKED";
+            createStars();
         }
 
     },200);
+}
+
+function createStars(){
+    for(let i=0;i<100;i++){
+        const star=document.createElement("div");
+        star.className="star";
+        star.style.top=Math.random()*100+"%";
+        star.style.left=Math.random()*100+"%";
+        star.style.animationDuration=(Math.random()*3+1)+"s";
+        document.body.appendChild(star);
+    }
 }
 </script>
 
