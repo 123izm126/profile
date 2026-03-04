@@ -3,171 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>izm | RECREATION</title>
+<title>イズミ | 自己紹介</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Orbitron',sans-serif;
-}
-
 body{
+    margin:0;
     height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    background:#050510;
-    color:white;
-    overflow:hidden;
-    transition:1.5s ease;
+    background:#ffffff;
+    font-family:sans-serif;
+    transition:0.3s ease;
 }
 
-/* メインカード */
 .container{
     text-align:center;
-    padding:70px 100px;
-    border-radius:20px;
-    background:rgba(0,0,30,0.5);
-    backdrop-filter:blur(15px);
-    border:1px solid rgba(0,255,255,0.4);
-    box-shadow:0 0 50px rgba(0,255,255,0.4);
-    transition:1.5s ease;
 }
 
 h1{
-    font-size:4rem;
-    letter-spacing:12px;
-    color:#00ffff;
-    text-shadow:0 0 20px cyan,0 0 50px cyan;
-    transition:1.5s ease;
+    font-size:3rem;
+    margin:0;
+    cursor:pointer;
+    transition:0.2s;
 }
 
-.subtitle{
-    margin-top:25px;
-    opacity:0.7;
-    letter-spacing:3px;
-    transition:1.5s ease;
+p{
+    font-size:1.2rem;
+    margin-top:20px;
 }
 
 button{
-    margin-top:40px;
-    padding:12px 35px;
-    border-radius:30px;
-    border:1px solid cyan;
-    background:transparent;
-    color:cyan;
-    cursor:pointer;
-    transition:0.4s;
-}
-
-button:hover{
-    background:cyan;
-    color:black;
-}
-
-/* 崩壊エフェクト */
-.collapse .container{
-    transform:scale(1.2) rotate(5deg);
+    margin-top:30px;
+    padding:8px 18px;
+    font-size:0.8rem;
     opacity:0;
-    filter:blur(10px);
+    border:none;
+    background:none;
+    cursor:pointer;
 }
 
-.collapse{
-    background:black;
+/* グリッチ */
+.glitch{
+    animation:shake 0.15s;
 }
 
-/* 無の状態 */
-.void{
-    background:black;
-    color:black;
+@keyframes shake{
+    0%{transform:translate(3px,-3px);}
+    25%{transform:translate(-3px,3px);}
+    50%{transform:translate(3px,3px);}
+    75%{transform:translate(-3px,-3px);}
+    100%{transform:translate(0,0);}
 }
 
-/* 再構築光 */
-.light{
-    position:absolute;
-    width:6px;
-    height:6px;
-    background:white;
-    border-radius:50%;
-    animation:rise 3s ease forwards;
-}
-
-@keyframes rise{
-    0%{transform:translateY(50vh);opacity:0;}
-    30%{opacity:1;}
-    100%{transform:translateY(-50vh);opacity:0;}
-}
-
-/* 新世界 */
-.reborn{
-    background:radial-gradient(circle at center,#001a1a,#000000 70%);
-}
-
-.reborn .container{
-    background:rgba(0,255,200,0.1);
-    border:1px solid #00ffc8;
-    box-shadow:0 0 60px #00ffc8;
-}
-
-.reborn h1{
-    color:#00ffc8;
-    text-shadow:0 0 20px #00ffc8,0 0 60px #00ffc8;
-}
-
-.reborn button{
-    border:1px solid #00ffc8;
-    color:#00ffc8;
-}
-
-.reborn button:hover{
-    background:#00ffc8;
-    color:black;
+/* 深夜モード */
+.night{
+    background:#111;
+    color:#eee;
 }
 </style>
 </head>
+
 <body>
 
 <div class="container">
-    <h1 id="title">IZM</h1>
-    <div class="subtitle" id="subtitle">CREATE. DESTROY. RECREATE.</div>
-    <button onclick="beginRecreation()">SHIFT</button>
+    <h1 id="name">イズミ</h1>
+    <p id="text">喋るのがすきです</p>
+    <button id="secret">.</button>
 </div>
 
 <script>
-function beginRecreation(){
-    const body = document.body;
-    const subtitle = document.getElementById("subtitle");
+const body = document.body;
+const nameEl = document.getElementById("name");
+const textEl = document.getElementById("text");
+const secretBtn = document.getElementById("secret");
 
-    // 崩壊
-    body.className = "collapse";
-    subtitle.textContent = "WORLD COLLAPSING";
+let clickCount = 0;
+let shiftCount = 0;
 
-    setTimeout(()=>{
-        // 無
-        body.className = "void";
-        subtitle.textContent = "";
-        createLight();
+/* ⑤ 読み込み直後0.1秒ノイズ */
+window.onload = () => {
+    body.classList.add("glitch");
+    setTimeout(()=>body.classList.remove("glitch"),100);
+};
 
-        setTimeout(()=>{
-            // 再誕
-            body.className = "reborn";
-            subtitle.textContent = "A NEW REALITY";
-        },3000);
-
-    },1500);
-}
-
-function createLight(){
-    for(let i=0;i<60;i++){
-        const light=document.createElement("div");
-        light.className="light";
-        light.style.left=Math.random()*100+"%";
-        light.style.animationDuration=(Math.random()*2+2)+"s";
-        document.body.appendChild(light);
+/* ① 名前5回クリック */
+nameEl.addEventListener("click",()=>{
+    clickCount++;
+    if(clickCount >= 5){
+        glitchEffect();
+        clickCount = 0;
     }
+});
+
+function glitchEffect(){
+    body.classList.add("glitch");
+    nameEl.textContent = "???";
+    setTimeout(()=>{
+        nameEl.textContent = "イズミ";
+        body.classList.remove("glitch");
+    },200);
 }
+
+/* ② 深夜モード */
+const hour = new Date().getHours();
+if(hour >= 23 || hour <= 3){
+    body.classList.add("night");
+}
+
+/* ③ shiftキー3回 */
+document.addEventListener("keydown",(e)=>{
+    if(e.key === "Shift"){
+        shiftCount++;
+        if(shiftCount >= 3){
+            collapse();
+            shiftCount = 0;
+        }
+    }
+});
+
+function collapse(){
+    body.classList.add("glitch");
+    body.style.transform = "scale(1.05)";
+    setTimeout(()=>{
+        body.style.transform = "scale(1)";
+        body.classList.remove("glitch");
+    },300);
+}
+
+/* 🔐 隠しボタン → 文字化け */
+secretBtn.addEventListener("click",()=>{
+    nameEl.textContent = "�%#@!Ξ※$";
+    textEl.textContent = "∴⊿Ψ≈¶§∞";
+});
 </script>
 
 </body>
