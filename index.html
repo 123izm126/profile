@@ -10,80 +10,73 @@ body {
   font-family: sans-serif;
   background: #ffffff;
   color: #222;
-  transition: all 0.5s ease;
+  transition: 0.4s;
   overflow-x: hidden;
 }
 
-/* 通常ページ */
-.container {
-  padding: 100px;
+/* 中央コンテナ */
+.center-box {
+  position: relative;
+  width: 500px;
+  max-width: 90%;
+  margin: 100px auto;
   text-align: center;
+  padding: 40px;
 }
 
 /* 起動画面 */
-.boot-screen {
-  position: fixed;
-  inset: 0;
-  background: black;
-  color: #ff2222;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-family: monospace;
-  letter-spacing: 3px;
-  font-size: 1.2rem;
-  z-index: 20;
-}
-
-/* 警告画面 */
+.boot-screen,
 .warning-screen {
   position: fixed;
   inset: 0;
-  background: black;
-  color: #ff0000;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 50;
   font-family: monospace;
-  font-size: 1.4rem;
-  letter-spacing: 4px;
-  z-index: 25;
-  display: none;
+  letter-spacing: 3px;
 }
 
-/* ノイズ */
-.noise {
-  position: fixed;
+.boot-content,
+.warning-content {
+  position: relative;
+  padding: 40px;
+  background: black;
+  color: #ff2222;
+  text-align: center;
+  overflow: hidden;
+}
+
+.warning-content {
+  color: red;
+}
+
+/* 中央ノイズ */
+.center-noise {
+  position: absolute;
   inset: 0;
   pointer-events: none;
   background: repeating-linear-gradient(
     0deg,
-    rgba(255,255,255,0.15) 0px,
-    rgba(0,0,0,0.15) 2px,
-    rgba(255,255,255,0.15) 4px
+    rgba(255,255,255,0.2) 0px,
+    rgba(0,0,0,0.2) 2px,
+    rgba(255,255,255,0.2) 4px
   );
-  animation: noiseMove 0.15s infinite;
+  animation: noiseMove 0.1s infinite;
   opacity: 0;
-  z-index: 24;
 }
 
 @keyframes noiseMove {
   0% { transform: translate(0,0); }
-  50% { transform: translate(-3px,3px); }
-  100% { transform: translate(3px,-3px); }
+  50% { transform: translate(-4px,4px); }
+  100% { transform: translate(4px,-4px); }
 }
 
-.noise.active {
+.center-noise.active {
   opacity: 1;
 }
 
-/* グリッチモード */
-.glitch-mode {
-  filter: invert(1);
-}
-
-/* 文字ブレ */
+/* グリッチ文字 */
 .glitch-mode h1,
 .glitch-mode p {
   animation: textGlitch 0.15s infinite;
@@ -98,106 +91,111 @@ body {
 /* 隠しボタン */
 #hiddenBtn {
   position: fixed;
-  bottom: 10px;
-  right: 10px;
+  bottom: 15px;
+  right: 15px;
   width: 40px;
   height: 40px;
-  opacity: 0;
+  z-index: 100;
   cursor: pointer;
+}
+
+#hiddenBtn:hover {
+  box-shadow: 0 0 10px rgba(255,0,0,0.4);
 }
 </style>
 </head>
 
 <body>
 
+<!-- 起動 -->
 <div class="boot-screen" id="boot">
-  <div>Do not close this window.</div>
-  <div>Reality is temporarily unavailable.</div>
+  <div class="boot-content">
+    <div>Do not close this window.</div>
+    <div>Reality is temporarily unavailable.</div>
+    <div class="center-noise" id="bootNoise"></div>
+  </div>
 </div>
 
-<div class="warning-screen" id="warning">
-  Do not look it up.
+<!-- 警告 -->
+<div class="warning-screen" id="warning" style="display:none;">
+  <div class="warning-content">
+    Do not look it up.
+    <div class="center-noise" id="warnNoise"></div>
+  </div>
 </div>
 
-<div class="noise" id="noiseLayer"></div>
-
-<div class="container">
+<!-- 通常 -->
+<div class="center-box">
   <h1 id="name">イズミ</h1>
   <p id="desc">喋るのがすきです</p>
+  <div class="center-noise" id="mainNoise"></div>
 </div>
 
 <div id="hiddenBtn"></div>
 
 <script>
-const noise = document.getElementById("noiseLayer");
 const boot = document.getElementById("boot");
 const warning = document.getElementById("warning");
-const name = document.getElementById("name");
-const desc = document.getElementById("desc");
+const nameEl = document.getElementById("name");
+const descEl = document.getElementById("desc");
+
+const bootNoise = document.getElementById("bootNoise");
+const warnNoise = document.getElementById("warnNoise");
+const mainNoise = document.getElementById("mainNoise");
+
+let glitchActive = false;
 
 /* 起動演出 */
 window.addEventListener("load", () => {
-  setTimeout(() => {
-    noise.classList.add("active");
-  }, 1000);
-
-  setTimeout(() => {
-    boot.style.display = "none";
-    noise.classList.remove("active");
-  }, 1600);
+  setTimeout(() => bootNoise.classList.add("active"), 800);
+  setTimeout(() => boot.style.display = "none", 1500);
 });
 
-/* 文字化け関数 */
-function corruptText(text) {
+/* 文字化け */
+function corrupt(text) {
   const chars = "█▓▒░@#$%&*?";
-  return text.split("").map(c => {
-    if (Math.random() > 0.5) {
-      return chars[Math.floor(Math.random() * chars.length)];
-    }
-    return c;
-  }).join("");
+  return text.split("").map(c =>
+    Math.random() > 0.5
+      ? chars[Math.floor(Math.random()*chars.length)]
+      : c
+  ).join("");
 }
 
 /* 隠しボタン */
-const hiddenBtn = document.getElementById("hiddenBtn");
+document.getElementById("hiddenBtn").addEventListener("click", () => {
 
-hiddenBtn.addEventListener("click", () => {
+  if (glitchActive) return;
+  glitchActive = true;
 
-  // グリッチ開始
   document.body.classList.add("glitch-mode");
+  nameEl.innerText = corrupt("イズミ");
+  descEl.innerText = corrupt("喋るのがすきです");
 
-  // 文字化け
-  name.innerText = corruptText("イズミ");
-  desc.innerText = corruptText("喋るのがすきです");
-
-  noise.classList.add("active");
+  mainNoise.classList.add("active");
 
   setTimeout(() => {
-
-    // 警告表示
     warning.style.display = "flex";
-    noise.classList.remove("active");
-
+    warnNoise.classList.add("active");
+    mainNoise.classList.remove("active");
   }, 600);
 
   setTimeout(() => {
-
-    // 再ノイズ
-    noise.classList.add("active");
     warning.style.display = "none";
-
-  }, 1100);
-
-  setTimeout(() => {
-
-    // 完全復帰
+    mainNoise.classList.remove("active");
     document.body.classList.remove("glitch-mode");
-    noise.classList.remove("active");
-    name.innerText = "イズミ";
-    desc.innerText = "喋るのがすきです";
+    nameEl.innerText = "イズミ";
+    descEl.innerText = "喋るのがすきです";
+    glitchActive = false;
+  }, 1200);
 
-  }, 1600);
+});
 
+/* Shiftギミック */
+document.addEventListener("keydown", e => {
+  if (e.key === "Shift") nameEl.innerText = "IZUMI";
+});
+document.addEventListener("keyup", e => {
+  if (e.key === "Shift") nameEl.innerText = "イズミ";
 });
 </script>
 
