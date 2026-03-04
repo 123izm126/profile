@@ -25,7 +25,6 @@ h1{
     font-size:3rem;
     margin:0;
     cursor:pointer;
-    transition:0.2s;
 }
 
 p{
@@ -33,27 +32,19 @@ p{
     margin-top:20px;
 }
 
-button{
-    margin-top:30px;
-    padding:8px 18px;
-    font-size:0.8rem;
-    opacity:0;
-    border:none;
-    background:none;
+/* 隠しドット */
+.secret-dot{
     cursor:pointer;
+    transition:0.2s;
 }
 
-/* グリッチ */
-.glitch{
-    animation:shake 0.15s;
+.secret-dot:hover{
+    opacity:0.6;
 }
 
-@keyframes shake{
-    0%{transform:translate(3px,-3px);}
-    25%{transform:translate(-3px,3px);}
-    50%{transform:translate(3px,3px);}
-    75%{transform:translate(-3px,-3px);}
-    100%{transform:translate(0,0);}
+/* 読み込み直後の色調反転 */
+.invert{
+    filter: invert(1);
 }
 
 /* 深夜モード */
@@ -61,49 +52,59 @@ button{
     background:#111;
     color:#eee;
 }
+
+/* 軽いグリッチ */
+.glitch{
+    animation:shake 0.15s;
+}
+
+@keyframes shake{
+    0%{transform:translate(2px,-2px);}
+    25%{transform:translate(-2px,2px);}
+    50%{transform:translate(2px,2px);}
+    75%{transform:translate(-2px,-2px);}
+    100%{transform:translate(0,0);}
+}
 </style>
 </head>
-
 <body>
 
 <div class="container">
     <h1 id="name">イズミ</h1>
-    <p id="text">喋るのがすきです</p>
-    <button id="secret">.</button>
+    <p id="text">
+        喋るのがすきです<span class="secret-dot" id="secretDot">.</span>
+    </p>
 </div>
 
 <script>
 const body = document.body;
 const nameEl = document.getElementById("name");
 const textEl = document.getElementById("text");
-const secretBtn = document.getElementById("secret");
+const secretDot = document.getElementById("secretDot");
 
 let clickCount = 0;
 let shiftCount = 0;
+let corrupted = false;
 
-/* ⑤ 読み込み直後0.1秒ノイズ */
+/* ⑤ 読み込み直後 色調反転 */
 window.onload = () => {
-    body.classList.add("glitch");
-    setTimeout(()=>body.classList.remove("glitch"),100);
+    body.classList.add("invert");
+    setTimeout(()=>body.classList.remove("invert"),100);
 };
 
-/* ① 名前5回クリック */
+/* ① 名前5回クリックで軽いグリッチ */
 nameEl.addEventListener("click",()=>{
     clickCount++;
     if(clickCount >= 5){
-        glitchEffect();
+        body.classList.add("glitch");
+        nameEl.textContent = "???";
+        setTimeout(()=>{
+            nameEl.textContent = "イズミ";
+            body.classList.remove("glitch");
+        },200);
         clickCount = 0;
     }
 });
-
-function glitchEffect(){
-    body.classList.add("glitch");
-    nameEl.textContent = "???";
-    setTimeout(()=>{
-        nameEl.textContent = "イズミ";
-        body.classList.remove("glitch");
-    },200);
-}
 
 /* ② 深夜モード */
 const hour = new Date().getHours();
@@ -111,31 +112,50 @@ if(hour >= 23 || hour <= 3){
     body.classList.add("night");
 }
 
-/* ③ shiftキー3回 */
+/* ③ Shiftキー3回 */
 document.addEventListener("keydown",(e)=>{
     if(e.key === "Shift"){
         shiftCount++;
         if(shiftCount >= 3){
-            collapse();
+            body.classList.add("glitch");
+            body.style.transform = "scale(1.03)";
+            setTimeout(()=>{
+                body.style.transform = "scale(1)";
+                body.classList.remove("glitch");
+            },300);
             shiftCount = 0;
         }
     }
 });
 
-function collapse(){
-    body.classList.add("glitch");
-    body.style.transform = "scale(1.05)";
-    setTimeout(()=>{
-        body.style.transform = "scale(1)";
-        body.classList.remove("glitch");
-    },300);
-}
+/* 🔐 ドットクリック → 文字化け */
+secretDot.addEventListener("click",()=>{
+    if(!corrupted){
+        nameEl.textContent = generateCorruption(5);
+        textEl.innerHTML = generateCorruption(10) + 
+            '<span class="secret-dot" id="secretDot">.</span>';
+        corrupted = true;
+    }else{
+        nameEl.textContent = "イズミ";
+        textEl.innerHTML = 
+            '喋るのがすきです<span class="secret-dot" id="secretDot">.</span>';
+        corrupted = false;
+    }
 
-/* 🔐 隠しボタン → 文字化け */
-secretBtn.addEventListener("click",()=>{
-    nameEl.textContent = "�%#@!Ξ※$";
-    textEl.textContent = "∴⊿Ψ≈¶§∞";
+    // 再度イベント付与（innerHTMLで消えるため）
+    document.getElementById("secretDot")
+        .addEventListener("click", arguments.callee);
 });
+
+/* ランダム文字生成 */
+function generateCorruption(length){
+    const chars = "∴⊿ΨΞ§∞▓▒░#@%&";
+    let result = "";
+    for(let i=0;i<length;i++){
+        result += chars[Math.floor(Math.random()*chars.length)];
+    }
+    return result;
+}
 </script>
 
 </body>
