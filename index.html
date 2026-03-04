@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>izm | SYSTEM ERROR</title>
+<title>izm | REALITY SHIFT</title>
 
 <style>
 *{
@@ -21,6 +21,7 @@ body{
     align-items:center;
     overflow:hidden;
     color:white;
+    transition:0.6s ease;
 }
 
 /* 背景グリッド */
@@ -41,7 +42,6 @@ body::before{
     to{transform:translate(-40px,-40px);}
 }
 
-/* メインカード */
 .container{
     position:relative;
     padding:70px 100px;
@@ -52,44 +52,18 @@ body::before{
     box-shadow:0 0 50px rgba(0,255,255,0.4);
     text-align:center;
     z-index:1;
+    transition:0.6s ease;
 }
 
-/* グリッチ文字 */
-.glitch{
+h1{
     font-size:4rem;
     letter-spacing:10px;
-    position:relative;
     color:#00ffff;
     text-shadow:
         0 0 5px #00ffff,
         0 0 20px #00ffff,
         0 0 40px #00ffff;
-}
-
-/* ノイズオーバーレイ */
-.noise{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    pointer-events:none;
-    opacity:0;
-    background-image:url("https://grainy-gradients.vercel.app/noise.svg");
-    mix-blend-mode:screen;
-    z-index:999;
-}
-
-.flash{
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:white;
-    opacity:0;
-    pointer-events:none;
-    z-index:998;
+    transition:0.6s ease;
 }
 
 .subtitle{
@@ -97,6 +71,7 @@ body::before{
     font-size:1.2rem;
     opacity:0.7;
     letter-spacing:3px;
+    transition:0.6s ease;
 }
 
 button{
@@ -119,43 +94,84 @@ button:hover{
     box-shadow:0 0 20px cyan;
     transform:scale(1.1);
 }
+
+/* 崩壊エフェクト */
+.glitch{
+    animation:shake 0.15s infinite;
+}
+
+@keyframes shake{
+    0%{transform:translate(3px,-3px);}
+    25%{transform:translate(-3px,3px);}
+    50%{transform:translate(3px,3px);}
+    75%{transform:translate(-3px,-3px);}
+    100%{transform:translate(0,0);}
+}
+
+/* 変化後モード */
+.shifted{
+    background:#ffffff;
+    color:#000000;
+}
+
+.shifted .container{
+    background:rgba(255,255,255,0.8);
+    border:1px solid black;
+    box-shadow:0 0 40px rgba(0,0,0,0.3);
+}
+
+.shifted h1{
+    color:#000000;
+    text-shadow:none;
+}
+
+.shifted button{
+    border:1px solid black;
+    color:black;
+}
+
+.shifted button:hover{
+    background:black;
+    color:white;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="noise" id="noise"></div>
-<div class="flash" id="flash"></div>
-
 <div class="container">
-    <h1 class="glitch">IZM</h1>
-    <div class="subtitle">SIGNAL DISTORTION</div>
-    <button onclick="alert('REALITY FRAGMENTED')">ACCESS</button>
+    <h1 id="title">IZM</h1>
+    <div class="subtitle" id="subtitle">CLICK TO DISTORT REALITY</div>
+    <button onclick="shiftReality()">SHIFT</button>
 </div>
 
 <script>
-const noise = document.getElementById("noise");
-const flash = document.getElementById("flash");
+let shifted = false;
 
-function glitchBurst(){
-    noise.style.opacity = "0.6";
-    flash.style.opacity = "0.4";
-    document.body.style.transform = "translateX(5px)";
+function shiftReality(){
+    const body = document.body;
+    const title = document.getElementById("title");
+    const subtitle = document.getElementById("subtitle");
+
+    // 一瞬崩壊
+    body.classList.add("glitch");
 
     setTimeout(()=>{
-        noise.style.opacity = "0";
-        flash.style.opacity = "0";
-        document.body.style.transform = "translateX(0)";
-    },120);
-}
+        body.classList.remove("glitch");
 
-function randomGlitch(){
-    glitchBurst();
-    const next = Math.random()*4000 + 2000;
-    setTimeout(randomGlitch, next);
-}
+        shifted = !shifted;
 
-setTimeout(randomGlitch, 3000);
+        if(shifted){
+            body.classList.add("shifted");
+            subtitle.textContent = "REALITY HAS CHANGED";
+        }else{
+            body.classList.remove("shifted");
+            subtitle.textContent = "CLICK TO DISTORT REALITY";
+        }
+
+    },200);
+}
 </script>
 
 </body>
