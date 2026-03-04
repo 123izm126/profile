@@ -2,160 +2,95 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>イズミ | 自己紹介</title>
+<title>Izumi</title>
 
 <style>
-body{
-    margin:0;
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    background:#ffffff;
-    font-family:sans-serif;
-    transition:0.3s ease;
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #ffffff;
+  color: #222;
+  transition: filter 0.8s ease;
 }
 
-.container{
-    text-align:center;
+/* 色調反転 */
+.invert {
+  filter: invert(1) hue-rotate(180deg);
 }
 
-h1{
-    font-size:3rem;
-    margin:0;
-    cursor:pointer;
+/* ノイズ用レイヤー */
+.noise {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,0.2) 0px,
+    rgba(255,255,255,0.2) 2px,
+    rgba(0,0,0,0.2) 4px
+  );
+  mix-blend-mode: overlay;
+  animation: noiseMove 0.2s infinite;
+  opacity: 0;
 }
 
-p{
-    font-size:1.2rem;
-    margin-top:20px;
+@keyframes noiseMove {
+  0% { transform: translate(0,0); }
+  50% { transform: translate(-2px,2px); }
+  100% { transform: translate(2px,-2px); }
 }
 
-/* 隠しドット */
-.secret-dot{
-    cursor:pointer;
-    transition:0.2s;
+.noise.active {
+  opacity: 1;
 }
 
-.secret-dot:hover{
-    opacity:0.6;
+/* 普通の自己紹介 */
+.container {
+  padding: 100px;
+  text-align: center;
 }
 
-/* 読み込み直後の色調反転 */
-.invert{
-    filter: invert(1);
+h1 {
+  font-size: 3rem;
 }
 
-/* 深夜モード */
-.night{
-    background:#111;
-    color:#eee;
-}
-
-/* 軽いグリッチ */
-.glitch{
-    animation:shake 0.15s;
-}
-
-@keyframes shake{
-    0%{transform:translate(2px,-2px);}
-    25%{transform:translate(-2px,2px);}
-    50%{transform:translate(2px,2px);}
-    75%{transform:translate(-2px,-2px);}
-    100%{transform:translate(0,0);}
+p {
+  font-size: 1.2rem;
 }
 </style>
 </head>
+
 <body>
 
+<div class="noise" id="noiseLayer"></div>
+
 <div class="container">
-    <h1 id="name">イズミ</h1>
-    <p id="text">
-        喋るのがすきです<span class="secret-dot" id="secretDot">.</span>
-    </p>
+  <h1>イズミ</h1>
+  <p>喋るのがすきです</p>
 </div>
 
 <script>
-const body = document.body;
-const nameEl = document.getElementById("name");
-const textEl = document.getElementById("text");
-const secretDot = document.getElementById("secretDot");
+window.addEventListener("load", () => {
+  const body = document.body;
+  const noise = document.getElementById("noiseLayer");
 
-let clickCount = 0;
-let shiftCount = 0;
-let corrupted = false;
+  // ① 色調反転（1.2秒）
+  body.classList.add("invert");
 
-/* ⑤ 読み込み直後 色調反転 */
-window.onload = () => {
-    body.classList.add("invert");
-    setTimeout(()=>body.classList.remove("invert"),100);
-};
+  setTimeout(() => {
+    // ② ノイズ発生（1.5秒）
+    noise.classList.add("active");
+  }, 1200);
 
-/* ① 名前5回クリックで軽いグリッチ */
-nameEl.addEventListener("click",()=>{
-    clickCount++;
-    if(clickCount >= 5){
-        body.classList.add("glitch");
-        nameEl.textContent = "???";
-        setTimeout(()=>{
-            nameEl.textContent = "イズミ";
-            body.classList.remove("glitch");
-        },200);
-        clickCount = 0;
-    }
+  setTimeout(() => {
+    // ③ すべて解除 → 通常へ
+    body.classList.remove("invert");
+    noise.classList.remove("active");
+  }, 2700);
 });
-
-/* ② 深夜モード */
-const hour = new Date().getHours();
-if(hour >= 23 || hour <= 3){
-    body.classList.add("night");
-}
-
-/* ③ Shiftキー3回 */
-document.addEventListener("keydown",(e)=>{
-    if(e.key === "Shift"){
-        shiftCount++;
-        if(shiftCount >= 3){
-            body.classList.add("glitch");
-            body.style.transform = "scale(1.03)";
-            setTimeout(()=>{
-                body.style.transform = "scale(1)";
-                body.classList.remove("glitch");
-            },300);
-            shiftCount = 0;
-        }
-    }
-});
-
-/* 🔐 ドットクリック → 文字化け */
-secretDot.addEventListener("click",()=>{
-    if(!corrupted){
-        nameEl.textContent = generateCorruption(5);
-        textEl.innerHTML = generateCorruption(10) + 
-            '<span class="secret-dot" id="secretDot">.</span>';
-        corrupted = true;
-    }else{
-        nameEl.textContent = "イズミ";
-        textEl.innerHTML = 
-            '喋るのがすきです<span class="secret-dot" id="secretDot">.</span>';
-        corrupted = false;
-    }
-
-    // 再度イベント付与（innerHTMLで消えるため）
-    document.getElementById("secretDot")
-        .addEventListener("click", arguments.callee);
-});
-
-/* ランダム文字生成 */
-function generateCorruption(length){
-    const chars = "∴⊿ΨΞ§∞▓▒░#@%&";
-    let result = "";
-    for(let i=0;i<length;i++){
-        result += chars[Math.floor(Math.random()*chars.length)];
-    }
-    return result;
-}
 </script>
 
 </body>
