@@ -5,54 +5,49 @@
 <title>Izumi</title>
 
 <style>
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
   font-family: sans-serif;
   background: #ffffff;
   color: #222;
-  transition: 0.4s;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
-/* 通常 */
-.container {
-  padding: 100px;
+/* 完全中央配置 */
+.center-wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
 }
 
 /* 起動画面 */
-.boot-screen {
-  position: fixed;
-  inset: 0;
-  background: black;
-  color: #ff2222;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-family: monospace;
-  letter-spacing: 3px;
-  font-size: 1.2rem;
-  z-index: 50;
-}
-
-/* 警告画面 */
+.boot-screen,
 .warning-screen {
   position: fixed;
   inset: 0;
-  background: black;
-  color: #ff0000;
-  display: none;
+  display: flex;
   justify-content: center;
   align-items: center;
+  background: black;
+  color: #ff2222;
   font-family: monospace;
-  font-size: 1.4rem;
-  letter-spacing: 4px;
-  z-index: 60;
+  letter-spacing: 3px;
+  z-index: 50;
+  text-align: center;
 }
 
-/* ノイズ */
-.noise {
+.warning-screen {
+  color: red;
+  display: none;
+}
+
+/* 全画面ノイズ */
+.full-noise {
   position: fixed;
   inset: 0;
   pointer-events: none;
@@ -73,15 +68,11 @@ body {
   100% { transform: translate(4px,-4px); }
 }
 
-.noise.active {
+.full-noise.active {
   opacity: 1;
 }
 
-/* グリッチ */
-.glitch-mode {
-  filter: invert(1);
-}
-
+/* グリッチ文字 */
 .glitch-mode h1,
 .glitch-mode p {
   animation: textGlitch 0.15s infinite;
@@ -96,16 +87,14 @@ body {
 /* 隠しボタン */
 #hiddenBtn {
   position: fixed;
-  bottom: 15px;
-  right: 15px;
+  bottom: 20px;
+  right: 20px;
   width: 40px;
   height: 40px;
-  background: transparent;
-  z-index: 100;
   cursor: pointer;
+  z-index: 100;
 }
 
-/* ヒント（ホバーでほんのり光る） */
 #hiddenBtn:hover {
   box-shadow: 0 0 10px rgba(255,0,0,0.4);
 }
@@ -114,30 +103,33 @@ body {
 <body>
 
 <div class="boot-screen" id="boot">
-  <div>Do not close this window.</div>
-  <div>Reality is temporarily unavailable.</div>
+  <div>
+    <div>Do not close this window.</div>
+    <div>Reality is temporarily unavailable.</div>
+  </div>
 </div>
 
 <div class="warning-screen" id="warning">
   Do not look it up.
 </div>
 
-<div class="noise" id="noiseLayer"></div>
+<div class="full-noise" id="noise"></div>
 
-<div class="container">
-  <h1 id="name">イズミ</h1>
-  <p id="desc">喋るのがすきです</p>
+<div class="center-wrapper">
+  <div>
+    <h1 id="name">イズミ</h1>
+    <p id="desc">喋るのがすきです</p>
+  </div>
 </div>
 
 <div id="hiddenBtn"></div>
 
 <script>
-const noise = document.getElementById("noiseLayer");
 const boot = document.getElementById("boot");
 const warning = document.getElementById("warning");
+const noise = document.getElementById("noise");
 const nameEl = document.getElementById("name");
 const descEl = document.getElementById("desc");
-const hiddenBtn = document.getElementById("hiddenBtn");
 
 let glitchActive = false;
 
@@ -161,7 +153,7 @@ function corrupt(text) {
 }
 
 /* 隠しボタン */
-hiddenBtn.addEventListener("click", () => {
+document.getElementById("hiddenBtn").addEventListener("click", () => {
 
   if (glitchActive) return;
   glitchActive = true;
@@ -191,17 +183,12 @@ hiddenBtn.addEventListener("click", () => {
 
 });
 
-/* Shiftキーギミック */
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Shift") {
-    nameEl.innerText = "IZUMI";
-  }
+/* Shiftギミック */
+document.addEventListener("keydown", e => {
+  if (e.key === "Shift") nameEl.innerText = "IZUMI";
 });
-
-document.addEventListener("keyup", (e) => {
-  if (e.key === "Shift") {
-    nameEl.innerText = "イズミ";
-  }
+document.addEventListener("keyup", e => {
+  if (e.key === "Shift") nameEl.innerText = "イズミ";
 });
 </script>
 
