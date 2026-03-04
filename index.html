@@ -14,46 +14,46 @@ body {
   overflow-x: hidden;
 }
 
-/* 中央コンテナ */
-.center-box {
-  position: relative;
-  width: 500px;
-  max-width: 90%;
-  margin: 100px auto;
+/* 通常 */
+.container {
+  padding: 100px;
   text-align: center;
-  padding: 40px;
 }
 
 /* 起動画面 */
-.boot-screen,
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  background: black;
+  color: #ff2222;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: monospace;
+  letter-spacing: 3px;
+  font-size: 1.2rem;
+  z-index: 50;
+}
+
+/* 警告画面 */
 .warning-screen {
   position: fixed;
   inset: 0;
-  display: flex;
+  background: black;
+  color: #ff0000;
+  display: none;
   justify-content: center;
   align-items: center;
-  z-index: 50;
   font-family: monospace;
-  letter-spacing: 3px;
+  font-size: 1.4rem;
+  letter-spacing: 4px;
+  z-index: 60;
 }
 
-.boot-content,
-.warning-content {
-  position: relative;
-  padding: 40px;
-  background: black;
-  color: #ff2222;
-  text-align: center;
-  overflow: hidden;
-}
-
-.warning-content {
-  color: red;
-}
-
-/* 中央ノイズ */
-.center-noise {
-  position: absolute;
+/* ノイズ */
+.noise {
+  position: fixed;
   inset: 0;
   pointer-events: none;
   background: repeating-linear-gradient(
@@ -64,6 +64,7 @@ body {
   );
   animation: noiseMove 0.1s infinite;
   opacity: 0;
+  z-index: 55;
 }
 
 @keyframes noiseMove {
@@ -72,11 +73,15 @@ body {
   100% { transform: translate(4px,-4px); }
 }
 
-.center-noise.active {
+.noise.active {
   opacity: 1;
 }
 
-/* グリッチ文字 */
+/* グリッチ */
+.glitch-mode {
+  filter: invert(1);
+}
+
 .glitch-mode h1,
 .glitch-mode p {
   animation: textGlitch 0.15s infinite;
@@ -95,60 +100,54 @@ body {
   right: 15px;
   width: 40px;
   height: 40px;
+  background: transparent;
   z-index: 100;
   cursor: pointer;
 }
 
+/* ヒント（ホバーでほんのり光る） */
 #hiddenBtn:hover {
   box-shadow: 0 0 10px rgba(255,0,0,0.4);
 }
 </style>
 </head>
-
 <body>
 
-<!-- 起動 -->
 <div class="boot-screen" id="boot">
-  <div class="boot-content">
-    <div>Do not close this window.</div>
-    <div>Reality is temporarily unavailable.</div>
-    <div class="center-noise" id="bootNoise"></div>
-  </div>
+  <div>Do not close this window.</div>
+  <div>Reality is temporarily unavailable.</div>
 </div>
 
-<!-- 警告 -->
-<div class="warning-screen" id="warning" style="display:none;">
-  <div class="warning-content">
-    Do not look it up.
-    <div class="center-noise" id="warnNoise"></div>
-  </div>
+<div class="warning-screen" id="warning">
+  Do not look it up.
 </div>
 
-<!-- 通常 -->
-<div class="center-box">
+<div class="noise" id="noiseLayer"></div>
+
+<div class="container">
   <h1 id="name">イズミ</h1>
   <p id="desc">喋るのがすきです</p>
-  <div class="center-noise" id="mainNoise"></div>
 </div>
 
 <div id="hiddenBtn"></div>
 
 <script>
+const noise = document.getElementById("noiseLayer");
 const boot = document.getElementById("boot");
 const warning = document.getElementById("warning");
 const nameEl = document.getElementById("name");
 const descEl = document.getElementById("desc");
-
-const bootNoise = document.getElementById("bootNoise");
-const warnNoise = document.getElementById("warnNoise");
-const mainNoise = document.getElementById("mainNoise");
+const hiddenBtn = document.getElementById("hiddenBtn");
 
 let glitchActive = false;
 
 /* 起動演出 */
 window.addEventListener("load", () => {
-  setTimeout(() => bootNoise.classList.add("active"), 800);
-  setTimeout(() => boot.style.display = "none", 1500);
+  setTimeout(() => noise.classList.add("active"), 1000);
+  setTimeout(() => {
+    boot.style.display = "none";
+    noise.classList.remove("active");
+  }, 1600);
 });
 
 /* 文字化け */
@@ -162,7 +161,7 @@ function corrupt(text) {
 }
 
 /* 隠しボタン */
-document.getElementById("hiddenBtn").addEventListener("click", () => {
+hiddenBtn.addEventListener("click", () => {
 
   if (glitchActive) return;
   glitchActive = true;
@@ -170,32 +169,39 @@ document.getElementById("hiddenBtn").addEventListener("click", () => {
   document.body.classList.add("glitch-mode");
   nameEl.innerText = corrupt("イズミ");
   descEl.innerText = corrupt("喋るのがすきです");
-
-  mainNoise.classList.add("active");
+  noise.classList.add("active");
 
   setTimeout(() => {
     warning.style.display = "flex";
-    warnNoise.classList.add("active");
-    mainNoise.classList.remove("active");
+    noise.classList.remove("active");
   }, 600);
 
   setTimeout(() => {
     warning.style.display = "none";
-    mainNoise.classList.remove("active");
+    noise.classList.add("active");
+  }, 1100);
+
+  setTimeout(() => {
     document.body.classList.remove("glitch-mode");
+    noise.classList.remove("active");
     nameEl.innerText = "イズミ";
     descEl.innerText = "喋るのがすきです";
     glitchActive = false;
-  }, 1200);
+  }, 1600);
 
 });
 
-/* Shiftギミック */
-document.addEventListener("keydown", e => {
-  if (e.key === "Shift") nameEl.innerText = "IZUMI";
+/* Shiftキーギミック */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Shift") {
+    nameEl.innerText = "IZUMI";
+  }
 });
-document.addEventListener("keyup", e => {
-  if (e.key === "Shift") nameEl.innerText = "イズミ";
+
+document.addEventListener("keyup", (e) => {
+  if (e.key === "Shift") {
+    nameEl.innerText = "イズミ";
+  }
 });
 </script>
 
